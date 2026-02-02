@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Safe Rowosari – Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="auth.css">
+</head>
+
+<body class="auth-page auth-page--register">
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>Register</h1>
+        <p>Buat akun untuk mengakses dashboard Safe Rowosari.</p>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input id="username" placeholder="Masukkan username" autocomplete="username" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Masukkan password" autocomplete="new-password" />
+        <div class="helper-text">Minimal 6 karakter agar lebih aman.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="role">Role</label>
+        <select id="role">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <button onclick="registerUser()">Register</button>
+
+      <button class="secondary-button" onclick="window.location.href = 'index.html'">
+        Kembali ke Beranda
+      </button>
+
+      <div class="auth-link">
+        Sudah punya akun? <a href="./login.html">Login di sini</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARED MODAL -->
+  <div id="app-modal" class="modal-backdrop" data-variant="info">
+    <div class="modal-card">
+      <div id="app-modal-title" class="modal-title"></div>
+      <div id="app-modal-message" class="modal-message"></div>
+      <div class="modal-actions">
+        <button id="app-modal-ok" class="modal-button modal-button-primary">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth-modal.js"></script>
+  <script>
+    async function registerUser() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const role = document.getElementById("role").value;
+
+      if (!username || !password) {
+        AppModal.openError("Username dan password wajib diisi.");
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:5000/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password, role })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          AppModal.openError(data.message || "Register gagal.");
+          return;
+        }
+
+        AppModal.openSuccess(
+          data.message || "Registrasi berhasil.",
+          { onClose: () => window.location.href = "login.html" }
+        );
+      } catch (err) {
+        console.error(err);
+        AppModal.openError("Terjadi kesalahan server.");
+      }
+    }
+  </script>
+</body>
+</html>

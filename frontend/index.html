@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Safe Rowosari</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+</head>
+
+<body>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">
+      <i class="fas fa-shield-alt"></i>
+      <span class="logo-text">Safe <strong>Rowosari</strong></span>
+      <p id="role-label-admin" style="display:none;">Admin</p>
+      <p id="role-label-user" style="display:none;">User</p>
+    </div>
+    <ul class="menu">
+      <li id="menu-data" class="active">
+        <i class="fas fa-tint"></i><span>Data Ketinggian Air</span>
+      </li>
+      <li id="menu-history">
+        <i class="fas fa-history"></i><span>History Ketinggian Air</span>
+      </li>
+      <li id="menu-diagram">
+        <i class="fas fa-chart-line"></i><span>Diagram Ketinggian Air</span>
+      </li>
+      <!-- MENU KHUSUS ADMIN -->
+      <li id="menu-sensor" data-role="admin">
+        <i class="fas fa-microchip"></i><span>Daftar Sensor</span>
+      </li>
+      <li id="menu-qr">
+        <i class="fas fa-qrcode"></i><span>QR Bot Telegram</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">Kondisi Real-Time Jarak Ketinggian Air</h1>
+        <p class="page-subtitle">Monitoring terbaru ketinggian air di Rowosari.</p>
+      </div>
+      <div class="topbar-right">
+        <span id="welcome-text"></span>
+        <button id="auth-button">Login</button>
+      </div>
+    </div>
+
+    <!-- SECTION: DATA REALTIME -->
+    <div id="content-data" class="content-section">
+      <div class="card card-summary enhanced-summary">
+        <h3 class="summary-title">📊 Data Terkini</h3>
+      
+        <div class="summary-grid large-summary-grid">
+          <div class="summary-item large-summary-item">
+            <span class="summary-label big-label">Tanggal & Waktu</span>
+            <span id="latest-timestamp" class="summary-value big-value loading">Memuat...</span>
+          </div>
+      
+          <div class="summary-item large-summary-item">
+            <span class="summary-label big-label">Ketinggian Air</span>
+            <span id="latest-level" class="summary-value big-value loading highlight-value">Memuat...</span>
+          </div>
+      
+          <div class="summary-item large-summary-item">
+            <span class="summary-label big-label">Status</span>
+            <span id="latest-status" class="summary-value big-value status-pill loading">Memuat...</span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="card card-status">
+        <h3>Kategori Status</h3>
+        <ul class="status-legend">
+          <li><span class="status-label status-awas">AWAS</span> ≤ 100 cm</li>
+          <li><span class="status-label status-waspada">WASPADA</span> ≤ 200 cm</li>
+          <li><span class="status-label status-aman">AMAN</span> > 200 cm</li>
+        </ul>
+      </div>
+
+      <div class="card card-table">
+        <div class="card-header">
+          <div>
+            <h3>Riwayat Terbaru</h3>
+            <p class="card-subtitle">Daftar pembacaan jarak ketinggian air terbaru.</p>
+          </div>
+        </div>
+      
+        <!-- Tambahkan scroll-table -->
+        <div class="table-container scroll-table">
+          <table class="data-table" id="realtime-table">
+            <thead>
+              <tr>
+                <th>Jarak Air (cm)</th>
+                <th>Tanggal</th>
+                <th>Waktu</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4" class="loading">Memuat data...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SECTION: HISTORY -->
+    <div id="content-history" class="content-section" style="display:none;">
+      <div class="card card-table">
+        <div class="card-header">
+          <div>
+            <h3>History Ketinggian Air</h3>
+            <p class="card-subtitle">Rata-rata, nilai minimum, dan maksimum per hari.</p>
+          </div>
+          <div class="filter-bar">
+            <select id="month-select">
+              <option value="">Bulan</option>
+              <option value="1">Januari</option>
+              <option value="2">Februari</option>
+              <option value="3">Maret</option>
+              <option value="4">April</option>
+              <option value="5">Mei</option>
+              <option value="6">Juni</option>
+              <option value="7">Juli</option>
+              <option value="8">Agustus</option>
+              <option value="9">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
+            </select>
+            <select id="year-select">
+              <option value="">Tahun</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="data-table" id="history-table">
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Rata</th>
+                <th>Min</th>
+                <th>Max</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4" class="loading">Tidak ada data.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION: DIAGRAM -->
+    <div id="content-diagram" class="content-section" style="display:none;">
+      <div class="card">
+        <h3>Diagram Ketinggian Air</h3>
+        <canvas id="waterLevelChart" height="100"></canvas>
+        <div
+          class="status-himbauan-container"
+          style="display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;"
+        >
+          <div
+            class="status-box"
+            style="flex:1 1 300px;padding:16px;background:#f9f9f9;border-radius:8px;"
+          ></div>
+          <div
+            class="himbauan-box"
+            style="flex:1 1 300px;padding:16px;background:#f1f1f1;border-radius:8px;"
+          >
+            <h4>Himbauan</h4>
+            <p>Status saat ini NORMAL. Belum ada peningkatan debit air secara mencolok.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION: DAFTAR SENSOR (ADMIN ONLY) -->
+    <div id="content-sensor" class="content-section" style="display:none;">
+      <div class="card card-table">
+        <div class="card-header">
+          <div>
+            <h3>Daftar Sensor</h3>
+            <p class="card-subtitle">Informasi lokasi dan status sensor yang terpasang.</p>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="data-table" id="sensor-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nama</th>
+                <th>Lokasi</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4" class="loading">Memuat data sensor...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION: QR TELEGRAM -->
+    <div id="content-qr" class="content-section" style="display:none;">
+      <div class="card">
+        <h3>QR Bot Telegram</h3>
+        <p>Scan QR Code berikut untuk mengakses Bot Telegram sistem peringatan banjir Rowosari:</p>
+        <div class="qr-container">
+          <img
+            src="assets/QR Bot.jpeg"
+            alt="QR Bot Telegram"
+            class="qr-image"
+            id="qr-image"
+          />
+          <button id="download-qr" class="btn-download">Unduh QR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

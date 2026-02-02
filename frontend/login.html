@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Safe Rowosari – Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="auth.css">
+</head>
+
+<body class="auth-page auth-page--login">
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>Login</h1>
+        <p>Masuk untuk mengelola data Safe Rowosari.</p>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input id="username" placeholder="Masukkan username" autocomplete="username" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Masukkan password" autocomplete="current-password" />
+        <div class="helper-text">Gunakan kredensial yang sudah kamu daftarkan.</div>
+      </div>
+
+      <button onclick="login()">Login</button>
+
+      <button type="button" class="secondary-button"
+              onclick="window.location.href = 'index.html'">
+        Kembali ke Beranda
+      </button>
+
+      <div class="auth-link">
+        Belum punya akun? <a href="./register.html">Daftar di sini</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARED MODAL -->
+  <div id="app-modal" class="modal-backdrop" data-variant="error">
+    <div class="modal-card">
+      <div id="app-modal-title" class="modal-title"></div>
+      <div id="app-modal-message" class="modal-message"></div>
+      <div class="modal-actions">
+        <button id="app-modal-ok" class="modal-button modal-button-primary">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth-modal.js"></script>
+  <script>
+    async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!username || !password) {
+        AppModal.openError("Username dan password wajib diisi.");
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:5000/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          AppModal.openError(data.message || "Login gagal. Periksa username dan password.");
+          return;
+        }
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.user.role);
+        localStorage.setItem("username", data.user.username);
+
+        window.location.href = "index.html";
+      } catch (err) {
+        console.error(err);
+        AppModal.openError("Terjadi kesalahan saat menghubungi server. Coba beberapa saat lagi.");
+      }
+    }
+  </script>
+</body>
+</html>
