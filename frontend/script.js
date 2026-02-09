@@ -326,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function initChart() {
+    async function initChart() {
     const canvas = getEl("waterLevelChart");
     if (!canvas) return;
 
@@ -337,18 +337,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     chartInstance = new Chart(canvas, {
-      type: "line",
+      type: "bar", // DIUBAH dari 'line' ke 'bar'
       data: {
         labels,
         datasets: [
           {
             label: "Rata-rata Ketinggian Air per Hari (cm)",
             data: values,
-            borderColor: "rgb(75, 192, 192)",
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-            tension: 0.3,
-            fill: true,
-            pointRadius: 4,
+            backgroundColor: "rgba(75, 192, 192, 0.6)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1,
+            borderRadius: 6, // sudut rounded
+            hoverBackgroundColor: "rgba(75, 192, 192, 0.8)"
           },
         ],
       },
@@ -375,6 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     });
   }
+
 
   // ----------------- DAFTAR SENSOR -----------------
 
